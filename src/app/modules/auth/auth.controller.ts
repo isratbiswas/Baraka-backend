@@ -3,6 +3,8 @@ import { CatchAsync } from "../../utils/CatchAsync";
 import { setAuthCookie } from "../../utils/setCookies";
 import httpStatus from "http-status-codes";
 import sendResponse from "../../utils/sendResponse";
+import { AuthService } from "./auth.service";
+import { createNewAccessTokenWithRefreshToken } from "../../utils/userToken";
 const login = CatchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const loginInfo = await AuthService.login(req.body);
@@ -36,7 +38,16 @@ const logout = CatchAsync(
   },
 );
 
+const getNewAccessToken = async (refreshToken: string) => {
+  const newAccessToken =
+    await createNewAccessTokenWithRefreshToken(refreshToken);
+  return {
+    accessToken: newAccessToken,
+  };
+};
+
 export const AuthController = {
   login,
   logout,
+  getNewAccessToken,
 };

@@ -12,9 +12,9 @@ export interface IAuthProvider {
 
 export interface IUser {
   _id?: Types.ObjectId;
-  name: string;
+  name?: string;
   email: string;
   password: string;
-  role: Role;
+  role?: Role;
   authProviders: IAuthProvider[];
 }
