@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { CatchAsync } from "../../utils/CatchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { JwtPayload } from "jsonwebtoken";
+import ApiError from "../../errorHelpers/ApiError";
+import { UserService } from "./user.service";
 
 const createUser = CatchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -30,7 +32,21 @@ const getMe = CatchAsync(
   },
 );
 
-const updateProfile;
+const updateProfile = CatchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = (req.user as JwtPayload).userId;
+    if (!userId) {
+      throw new ApiError(400, "User Id is Required");
+    }
+    const profile = await UserService.updateProfile(userId, req.body);
+    sendResponse(res, {
+      success: true,
+      message: "Profile updated successfully",
+      statusCode: 200,
+      data: profile,
+    });
+  },
+);
 export const UserController = {
   createUser,
   getMe,
