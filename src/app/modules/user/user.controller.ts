@@ -18,10 +18,19 @@ const createUser = CatchAsync(
 const getMe = CatchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const decodedToken = req.user as JwtPayload;
+    console.log(decodedToken, "getMe");
     const result = await UserService.getMe(decodedToken.userId);
+    console.log(result, "getMe result");
+    sendResponse(res, {
+      success: true,
+      message: "User retrieved successfully",
+      statusCode: 200,
+      data: result,
+    });
   },
 );
 
+const updateProfile;
 export const UserController = {
   createUser,
   getMe,
